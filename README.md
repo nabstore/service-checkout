@@ -1,6 +1,6 @@
-# Backend da Nabstore
-#### Aluno: Nabson Paiva
-Este diretório possui o backend (API Rest) da loja online Nabstore desenvolvida em NodeJS.
+# Service Checkout
+
+Microserviço usado pelo mfe-checkout do Time Checkout.
 
 ## Para executar pela primeira vez
 1. **Execução da API e do banco**:
@@ -18,7 +18,7 @@ Este diretório possui o backend (API Rest) da loja online Nabstore desenvolvida
     ```
     ou
     ```bash
-    docker exec -it web_shop npx sequelize db:migrate
+    docker exec -it service_checkout npx sequelize db:migrate
     ```
 
 3. **Inserir seeds**:
@@ -27,7 +27,7 @@ Este diretório possui o backend (API Rest) da loja online Nabstore desenvolvida
     ```
     ou
     ```bash
-    docker exec -it web_shop npx sequelize-cli db:seed:all
+    docker exec -it service_checkout npx sequelize-cli db:seed:all
     ```
 
 

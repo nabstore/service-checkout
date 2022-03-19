@@ -5,7 +5,7 @@
     "title": "Nabstore Backend",
     "description": "Backend em monolito da loja Nabstore."
   },
-  "host": "localhost:3020",
+  "host": "localhost:3023",
   "basePath": "/",
   "tags": [],
   "schemes": [

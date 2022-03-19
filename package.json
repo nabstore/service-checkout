@@ -1,5 +1,5 @@
 {
-  "name": "nabstore-backend",
+  "name": "service-checkout",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

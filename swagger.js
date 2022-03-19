@@ -12,10 +12,10 @@ const endpointsFiles = [
 const doc = {
   info: {
     version: "1.0.0",
-    title: "Nabstore Backend",
-    description: "Backend em monolito da loja Nabstore.",
+    title: "Service Checkout",
+    description: "Microsserviço do Time Checkout.",
   },
-  host: "localhost:3020",
+  host: "localhost:3023",
   tags: [],
   securityDefinitions: {
     bearerAuth: {

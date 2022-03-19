@@ -2,6 +2,7 @@ import { TipoUsuario } from "../models";
 import jwt from 'jsonwebtoken';
 
 const verifyAuth = (req, res, next) => {
+  // #swagger.ignore = true
   let token = req.headers['authorization'];
 
   if (!token) return res.status(401).send({ message: 'Nenhum token encontrado.' });
@@ -19,6 +20,7 @@ const verifyAuth = (req, res, next) => {
 };
 
 const isColaborator = (req, res, next) => {
+  // #swagger.ignore = true
   if (!req.usuario) {
     return res.status(401).send({ message: 'Nenhum token encontrado.' });
   }

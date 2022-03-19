@@ -1,11 +1,7 @@
-import {
-  Cartao,
-  Compra,
-  CompraItem,
-  Endereco,
-  Produto,
-} from "../../models/index";
+import { Cartao, Compra, CompraItem } from "../../models/index";
 import { getEstimatedDeliveryDate } from "../entregas/usecases/getEstimatedDeliveryDate";
+import { getProducts } from "../products/usecases";
+import { getEnderecoById } from "../users/usecases";
 const { Op } = require("sequelize");
 
 const create = async (req, res) => {
@@ -38,14 +34,15 @@ const create = async (req, res) => {
     const novoCompraItens = await CompraItem.bulkCreate(compraItens);
 
     for (let produto of req.body.produtos) {
-      await Produto.decrement(
-        { estoque: produto.quantidade },
-        {
-          where: {
-            id: produto.produtoId,
-          },
-        }
-      );
+      // TODO - Fazer requisição ao mfe-products para editar produtos
+      // await Produto.decrement(
+      //   { estoque: produto.quantidade },
+      //   {
+      //     where: {
+      //       id: produto.produtoId,
+      //     },
+      //   }
+      // );
     }
 
     res.status(201).send({ compra, novoCompraItens });
@@ -97,17 +94,15 @@ const read = async (req, res) => {
   }] */
   const id = req.params.id;
   try {
-    const compra = await Compra.findOne({
+    let compra = await Compra.findOne({
       where: {
         usuarioId: req.usuario.id,
         id,
       },
       include: [
         Cartao,
-        Endereco,
         {
           model: CompraItem,
-          include: [Produto],
         },
       ],
     });
@@ -117,6 +112,31 @@ const read = async (req, res) => {
         error: `Compra ${id} não encontrado`,
       });
     }
+
+    compra = compra.toJSON();
+
+    // Faz join do endereço requisitado do service-users com a compra
+    compra.Endereco = await getEnderecoById(compra.EnderecoId, req.headers['authorization']);
+
+    // Faz join dos produtos requisitados do service-products com o CompraItems
+    const productsIds = compra.CompraItems.map(
+      (compraItem) => compraItem.produtoId
+    );
+
+    const products = await getProducts(
+      productsIds,
+      req.headers["authorization"]
+    );
+
+    const productsObject = {};
+    products.forEach((prod) => {
+      productsObject[prod.id] = prod;
+    });
+
+    compra.CompraItems = compra.CompraItems.map((compraItem) => ({
+      ...compraItem,
+      Produto: productsObject[compraItem.produtoId],
+    }));
 
     res.status(200).send(compra);
   } catch (error) {

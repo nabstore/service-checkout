@@ -8,6 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      type: Sequelize.DataTypes.INTEGER,
+      cartaoId: Sequelize.DataTypes.INTEGER,
       usuarioId: {
         type: Sequelize.INTEGER
       },

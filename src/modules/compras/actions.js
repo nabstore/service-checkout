@@ -1,6 +1,6 @@
 import { Cartao, Compra, CompraItem } from "../../models/index";
 import { getEstimatedDeliveryDate } from "../entregas/usecases/getEstimatedDeliveryDate";
-import { getProducts } from "../products/usecases";
+import { decrementProdutosEstoque, getProducts } from "../products/usecases";
 import { getEnderecoById } from "../users/usecases";
 const { Op } = require("sequelize");
 
@@ -13,14 +13,18 @@ const create = async (req, res) => {
   const estimatedDeliveryDate = new Date();
   estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + 7);
   const estimative = getEstimatedDeliveryDate("");
+
   try {
+    // Verifica se o endereço existe
+    const endereco = await getEnderecoById(req.body.enderecoId, req.headers['authorization']);
+
     const total = req.body.produtos.reduce(
       (prev, atual) => prev + atual.quantidade * atual.precoUnit,
       0
     );
     const compra = await Compra.create({
       usuarioId: req.usuario.id,
-      enderecoId: req.body.enderecoId,
+      enderecoId: endereco.id,
       cartaoId: req.body.cartaoId,
       estimatedDeliveryDate: estimative.estimatedDeliveryDate,
       total,
@@ -33,17 +37,13 @@ const create = async (req, res) => {
 
     const novoCompraItens = await CompraItem.bulkCreate(compraItens);
 
-    for (let produto of req.body.produtos) {
-      // TODO - Fazer requisição ao mfe-products para editar produtos
-      // await Produto.decrement(
-      //   { estoque: produto.quantidade },
-      //   {
-      //     where: {
-      //       id: produto.produtoId,
-      //     },
-      //   }
-      // );
-    }
+    const produtosToDecrement = req.body.produtos.map((prod) => ({
+      quantidade: prod.quantidade,
+      id: prod.produtoId,
+    }));
+
+    // TODO - verificar se tem esse estoque no banco
+    await decrementProdutosEstoque(produtosToDecrement);
 
     res.status(201).send({ compra, novoCompraItens });
   } catch (err) {
@@ -116,7 +116,10 @@ const read = async (req, res) => {
     compra = compra.toJSON();
 
     // Faz join do endereço requisitado do service-users com a compra
-    compra.Endereco = await getEnderecoById(compra.EnderecoId, req.headers['authorization']);
+    compra.Endereco = await getEnderecoById(
+      compra.EnderecoId,
+      req.headers["authorization"]
+    );
 
     // Faz join dos produtos requisitados do service-products com o CompraItems
     const productsIds = compra.CompraItems.map(

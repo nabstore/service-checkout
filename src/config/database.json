@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root",
+    "database": "db_checkout",
+    "host": "mysqldb",
+    "dialect": "mysql",
+    "port": 3310
+  },
+  "test": {
+    "username": "root",
+    "password": "root",
+    "database": "db_checkout",
+    "host": "mysqldb",
+    "dialect": "mysql",
+    "port": 3310
+  },
+  "production": {
+    "username": "root",
+    "password": "root",
+    "database": "db_checkout",
+    "host": "mysqldb",
+    "dialect": "mysql",
+    "port": 3310
+  }
+}

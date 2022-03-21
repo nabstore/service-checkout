@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.SERVICE_PRODUCTS_PORT,
+  baseURL: process.env.SERVICE_PRODUCTS_BASE_URL,
 });
 
 const getProducts = async (ids, token) => {
@@ -13,4 +13,9 @@ const getProducts = async (ids, token) => {
   return res.data;
 };
 
-export { getProducts };
+const decrementProdutosEstoque = async (produtos) => {
+  const res = await api.put("/produtos/estoque/decrement", { produtos });
+  return res.data;
+};
+
+export { getProducts, decrementProdutosEstoque };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.SERVICE_USERS_PORT,
+  baseURL: process.env.SERVICE_USERS_BASE_URL,
 });
 
 const getEnderecoById = async (id, token) => {

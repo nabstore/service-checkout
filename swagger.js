@@ -5,6 +5,7 @@ const endpointsFiles = [
   "./src/modules/compras/routes.js",
   "./src/modules/cartao/routes.js",
   "./src/modules/entregas/routes.js",
+  "./src/modules/products/routes.js",
 ];
 const doc = {
   info: {

@@ -215,28 +215,6 @@
           }
         }
       }
-    },
-    "/produtos/{id}/image": {
-      "get": {
-        "tags": [
-          "Produtos"
-        ],
-        "summary": "Redireciona para a rota de imagem do service-products",
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "301": {
-            "description": "Moved Permanently"
-          }
-        }
-      }
     }
   }
 }
